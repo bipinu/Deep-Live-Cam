@@ -147,7 +147,7 @@ def get_one_face(frame: Frame, faces: Any = None) -> Any:
             faces = _analyse_faces(frame)
     try:
         return min(faces, key=lambda x: x.bbox[0])
-    except (TypeError, ValueError):
+    except ValueError:
         return None
 
 
