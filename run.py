@@ -31,9 +31,6 @@ if sys.platform == "win32":
             except (OSError, AttributeError):
                 pass
 
-# Import the tkinter fix to patch the ScreenChanged error
-import tkinter_fix
-
 from modules import platform_info
 platform_info.print_banner()
 
