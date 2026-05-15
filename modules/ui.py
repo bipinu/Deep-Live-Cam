@@ -1240,7 +1240,11 @@ def create_webcam_preview(camera_index: int):
     global preview_label, PREVIEW
 
     cap = VideoCapturer(camera_index)
-    if not cap.start(1920, 1080, 60):
+    # Capture at preview window size — drops USB bandwidth and processing cost
+    # vs. capturing at 1080p and downscaling. The camera negotiates the closest
+    # mode it supports, which is usually a clean 16:9 resolution at least this
+    # size; cv2 downscales the rest on the fly.
+    if not cap.start(PREVIEW_DEFAULT_WIDTH, PREVIEW_DEFAULT_HEIGHT, 60):
         update_status("Failed to start camera")
         return
 
