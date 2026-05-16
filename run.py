@@ -52,10 +52,13 @@ if sys.platform.startswith("linux"):
             _lib_dir = os.path.join(_nvidia_dir, _pkg, "lib")
             if not os.path.isdir(_lib_dir):
                 continue
-            # Also expose the directory to child processes
-            os.environ["LD_LIBRARY_PATH"] = (
-                _lib_dir + os.pathsep + os.environ.get("LD_LIBRARY_PATH", "")
-            )
+            # Also expose the directory to child processes, without
+            # duplicating an entry that is already present.
+            _ldp = os.environ.get("LD_LIBRARY_PATH", "")
+            if _lib_dir not in _ldp.split(os.pathsep):
+                os.environ["LD_LIBRARY_PATH"] = (
+                    _lib_dir + (os.pathsep + _ldp if _ldp else "")
+                )
             for _so in sorted(glob.glob(os.path.join(_lib_dir, "lib*.so*"))):
                 try:
                     ctypes.CDLL(_so, mode=ctypes.RTLD_GLOBAL)
